@@ -2,7 +2,7 @@
 # ============================================================================
 # VPS Setup Script
 # ============================================================================
-# Re-runnable provisioning for Ubuntu 24.04 (x86_64) development VPS.
+# Re-runnable provisioning for Ubuntu (latest stable) x86_64 development VPS.
 # See SPEC.md for full details. See config.sh for toggles.
 # ============================================================================
 # Note: NOT using set -e so individual failures don't halt the script.
@@ -573,10 +573,17 @@ install_neovim() {
         return
     fi
 
-    print_install "Adding Neovim PPA and installing..."
-    add-apt-repository -y ppa:neovim-ppa/stable
-    apt-get update -y
-    DEBIAN_FRONTEND=noninteractive apt-get install -y neovim
+    # Try apt first (Ubuntu 25.10+ has a recent enough Neovim in default repos).
+    # Fall back to GitHub release if apt version is too old or unavailable.
+    print_install "Installing Neovim via apt..."
+    if ! DEBIAN_FRONTEND=noninteractive apt-get install -y neovim 2>/dev/null; then
+        print_info "apt install failed, downloading latest Neovim from GitHub..."
+        local nvim_url="https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz"
+        curl -fsSL "$nvim_url" -o /tmp/nvim.tar.gz
+        tar xzf /tmp/nvim.tar.gz -C /opt
+        ln -sf /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/nvim
+        rm -f /tmp/nvim.tar.gz
+    fi
 
     local nver
     nver=$(nvim --version 2>/dev/null | head -1 | awk '{print $2}' || echo "unknown")
@@ -734,7 +741,7 @@ main() {
     echo "  ╚╗╔╝╠═╝╚═╗  ╚═╗║╣  ║ ║ ║╠═╝"
     echo "   ╚╝ ╩  ╚═╝  ╚═╝╚═╝ ╩ ╚═╝╩  "
     echo -e "${NC}"
-    echo "  Ubuntu 24.04 Development VPS Provisioner"
+    echo "  Ubuntu Development VPS Provisioner"
     echo "  Config: $SCRIPT_DIR/config.sh"
     echo ""
 

@@ -1,6 +1,6 @@
 # VPS Setup
 
-Re-runnable provisioning script for Ubuntu 24.04 (x86_64) development VPS.
+Re-runnable provisioning script for Ubuntu (latest stable) x86_64 development VPS.
 
 ## Quick Start
 
@@ -27,18 +27,18 @@ cp config/zai.env.example config/zai.env
 
 ## What Gets Installed
 
-| Category       | Tools                                                        |
-| -------------- | ------------------------------------------------------------ |
-| System         | build-essential, cmake, clang, curl, wget, git, and more     |
-| Python         | pyenv + latest stable Python                                 |
-| Node.js        | nvm + latest LTS Node.js                                     |
-| Go             | goenv + latest stable Go                                     |
-| Rust           | rustup + stable + rust-analyzer, clippy, cargo-watch, cargo-edit |
-| Swift          | swiftly + latest stable Swift                                |
-| CLI Tools      | bat, eza, fd, ripgrep, dust, duf, zoxide, fzf, jq, yq, tldr, tree, ncdu |
-| Monitoring     | btop, htop, iotop                                            |
-| Editor         | Neovim (binary only)                                         |
-| AI Agent       | OpenClaw (Claude Code)                                       |
+| Category   | Tools                                                                   |
+| ---------- | ----------------------------------------------------------------------- |
+| System     | build-essential, cmake, clang, curl, wget, git, and more                |
+| Python     | pyenv + latest stable Python                                            |
+| Node.js    | nvm + latest LTS Node.js                                                |
+| Go         | goenv + latest stable Go                                                |
+| Rust       | rustup + stable + rust-analyzer, clippy, cargo-watch, cargo-edit        |
+| Swift      | swiftly + latest stable Swift                                           |
+| CLI Tools  | bat, eza, fd, ripgrep, dust, duf, zoxide, fzf, jq, yq, tldr, tree, ncdu |
+| Monitoring | btop, htop, iotop                                                       |
+| Editor     | Neovim (binary only)                                                    |
+| AI Agent   | OpenClaw (Claude Code)                                                  |
 
 ## Configuration
 

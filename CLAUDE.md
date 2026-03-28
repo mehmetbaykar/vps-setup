@@ -5,7 +5,7 @@ It exists so that AI agents (including OpenClaw) can immediately understand the 
 
 ## System
 
-- **OS**: Ubuntu 24.04 LTS (x86_64)
+- **OS**: Ubuntu (latest stable, e.g. 25.10) (x86_64)
 - **Provider**: Hostinger
 - **User**: root
 - **Timezone**: Europe/Berlin

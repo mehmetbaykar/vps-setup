@@ -2,7 +2,7 @@
 
 ## Overview
 
-A single, re-runnable setup script that provisions a fresh Ubuntu 24.04 (x86_64) VPS with a complete development environment. Designed to be VPS-size agnostic (tested on 16GB and 32GB Hostinger instances). The script installs dev tools, modern CLI utilities, monitoring, and finishes with OpenClaw (Claude Code) as the last step.
+A single, re-runnable setup script that provisions a fresh Ubuntu (latest stable) x86_64 VPS with a complete development environment. Designed to be VPS-size agnostic (tested on 16GB and 32GB Hostinger instances). The script installs dev tools, modern CLI utilities, monitoring, and finishes with OpenClaw (Claude Code) as the last step.
 
 The repo also serves as documentation for AI agents — a static `CLAUDE.md` describes the full environment so that any agent running on the VPS understands what tools are available, where they live, and how the system is configured.
 
@@ -12,7 +12,7 @@ The repo also serves as documentation for AI agents — a static `CLAUDE.md` des
 
 | Property       | Value                                |
 | -------------- | ------------------------------------ |
-| OS             | Ubuntu 24.04 LTS                     |
+| OS             | Ubuntu (latest stable, e.g. 25.10)   |
 | Architecture   | x86_64                               |
 | Provider       | Hostinger                            |
 | VPS sizes      | 16GB, 32GB (script is size-agnostic) |
