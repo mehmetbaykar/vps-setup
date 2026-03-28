@@ -569,7 +569,7 @@ install_monitoring() {
     fi
 
     local bver
-    bver=$(btop --version 2>/dev/null | head -1 || echo "installed")
+    bver=$(btop --version 2>/dev/null | grep -oP '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || echo "installed")
 
     local t
     t=$(stop_timer)
@@ -682,7 +682,7 @@ install_openclaw() {
 
     if command_exists openclaw; then
         local over
-        over=$(openclaw --version 2>/dev/null || echo "unknown")
+        over=$(openclaw --version 2>/dev/null | grep -oP '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || echo "unknown")
         print_skip "OpenClaw already installed ($over)"
         track "OpenClaw" "SKIPPED" "$over" "-"
         return
@@ -692,7 +692,7 @@ install_openclaw() {
     curl -fsSL https://claude.ai/install.sh | bash
 
     local over
-    over=$(openclaw --version 2>/dev/null || echo "installed")
+    over=$(openclaw --version 2>/dev/null | grep -oP '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || echo "installed")
 
     local t
     t=$(stop_timer)
