@@ -410,19 +410,24 @@ install_swift() {
         return
     fi
 
-    print_install "Installing swiftly (Swift version manager)..."
-    curl -fsSL https://swiftlang.github.io/swiftly/swiftly-install.sh | bash -s -- -y
+    # swiftly doesn't support non-LTS Ubuntu (e.g. 25.10).
+    # Fix: download swiftly manually and force --platform ubuntu24.04.
+    # The Ubuntu 24.04 toolchain is ABI-compatible with newer Ubuntu releases.
+    print_install "Downloading swiftly..."
+    curl -fsSL "https://download.swift.org/swiftly/linux/swiftly-$(uname -m).tar.gz" -o /tmp/swiftly.tar.gz
+    tar xzf /tmp/swiftly.tar.gz -C /tmp
+    rm -f /tmp/swiftly.tar.gz
 
-    # Source swiftly env if it exists
-    if [[ -f "$HOME/.local/share/swiftly/env.sh" ]]; then
+    print_install "Initializing swiftly (forcing ubuntu24.04 platform)..."
+    /tmp/swiftly init --skip-install --platform ubuntu24.04 --assume-yes
+
+    # Source swiftly env
+    local swiftly_env="${SWIFTLY_HOME_DIR:-$HOME/.local/share/swiftly}/env.sh"
+    if [[ -f "$swiftly_env" ]]; then
         # shellcheck source=/dev/null
-        source "$HOME/.local/share/swiftly/env.sh"
+        source "$swiftly_env"
     fi
-    # Also check the older path
-    if [[ -f "$HOME/.swiftly/env.sh" ]]; then
-        # shellcheck source=/dev/null
-        source "$HOME/.swiftly/env.sh"
-    fi
+    hash -r
 
     print_install "Installing latest stable Swift..."
     swiftly install latest
@@ -663,8 +668,8 @@ install_openclaw() {
         return
     fi
 
-    print_install "Installing OpenClaw via official installer..."
-    curl -fsSL https://openclaw.ai/install.sh | bash
+    print_install "Installing Claude Code via official installer..."
+    curl -fsSL https://claude.ai/install.sh | bash
 
     local over
     over=$(openclaw --version 2>/dev/null || echo "installed")
