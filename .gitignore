@@ -1,0 +1,7 @@
+# Actual secret files (never commit these)
+config/*.env
+!config/*.env.example
+
+# OS files
+.DS_Store
+Thumbs.db
