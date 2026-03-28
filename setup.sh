@@ -60,6 +60,22 @@ track() {
 
 command_exists() { command -v "$1" &>/dev/null; }
 
+# Wait for any running apt/dpkg process to finish (max 60s)
+wait_for_apt() {
+    local waited=0
+    while fuser /var/lib/dpkg/lock-frontend &>/dev/null; do
+        if [[ $waited -eq 0 ]]; then
+            print_info "Waiting for another apt process to finish..."
+        fi
+        sleep 2
+        waited=$((waited + 2))
+        if [[ $waited -ge 60 ]]; then
+            print_fail "Timed out waiting for dpkg lock after 60s"
+            return 1
+        fi
+    done
+}
+
 # ============================================================================
 # Source config
 # ============================================================================
@@ -94,7 +110,8 @@ install_system_packages() {
         libsqlite3-dev libncurses-dev liblzma-dev libxml2-dev \
         clang libicu-dev libcurl4-openssl-dev libedit-dev \
         software-properties-common apt-transport-https ca-certificates \
-        bash-completion; then
+        bash-completion \
+        gnupg2 libpython3-dev libz3-dev; then
         local t; t=$(stop_timer)
         print_fail "Some system packages failed to install"
         track "System packages" "FAILED" "-" "$t"
@@ -404,7 +421,7 @@ install_swift() {
 
     if command_exists swift; then
         local sver
-        sver=$(swift --version 2>/dev/null | head -1 | grep -oP '[0-9]+\.[0-9]+(\.[0-9]+)?' || echo "unknown")
+        sver=$(swift --version 2>/dev/null | head -1 | grep -oP '[0-9]+\.[0-9]+(\.[0-9]+)?' | head -1 || echo "unknown")
         print_skip "Swift already installed ($sver)"
         track "Swift" "SKIPPED" "$sver" "-"
         return
@@ -433,7 +450,7 @@ install_swift() {
     swiftly install latest
 
     local sver
-    sver=$(swift --version 2>/dev/null | head -1 | grep -oP '[0-9]+\.[0-9]+(\.[0-9]+)?' || echo "unknown")
+    sver=$(swift --version 2>/dev/null | head -1 | grep -oP '[0-9]+\.[0-9]+(\.[0-9]+)?' | head -1 || echo "unknown")
 
     local t
     t=$(stop_timer)
@@ -455,6 +472,7 @@ install_cli_tools() {
     local failed=0
 
     # --- apt-based tools ---
+    wait_for_apt
     print_install "Installing apt-based CLI tools (bat, eza, fd, ripgrep, fzf, jq, duf, tree, ncdu)..."
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
         bat eza fd-find ripgrep fzf jq duf tree ncdu || {
@@ -541,6 +559,7 @@ install_monitoring() {
     print_header "Step 10/13: Monitoring Tools"
     start_timer
 
+    wait_for_apt
     print_install "Installing btop, htop, iotop..."
     if ! DEBIAN_FRONTEND=noninteractive apt-get install -y btop htop iotop; then
         local t; t=$(stop_timer)
@@ -578,6 +597,7 @@ install_neovim() {
         return
     fi
 
+    wait_for_apt
     # Try apt first (Ubuntu 25.10+ has a recent enough Neovim in default repos).
     # Fall back to GitHub release if apt version is too old or unavailable.
     print_install "Installing Neovim via apt..."
