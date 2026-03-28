@@ -6,7 +6,7 @@ Re-runnable provisioning script for Ubuntu (latest stable) x86_64 development VP
 
 ```bash
 # 1. Clone this repo on your VPS
-git clone <your-repo-url> ~/vps-setup
+git clone https://github.com/mehmetbaykar/vps-setup.git ~/vps-setup
 cd ~/vps-setup
 
 # 2. (Optional) Edit config.sh to toggle tools on/off
